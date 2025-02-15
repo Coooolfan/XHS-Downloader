@@ -165,6 +165,7 @@ class XHS:
                     container["作品类型"],
                     log,
                     bar,
+                    container["作者昵称"]
                 )
                 await self.__add_record(i, result)
         elif not u:

@@ -70,6 +70,7 @@ class Download:
             type_: str,
             log,
             bar,
+            author_name: str = None,
     ) -> tuple[Path, list[Any]]:
         path = self.__generate_path(name)
         if type_ == _("视频"):
@@ -98,6 +99,7 @@ class Download:
                 format_,
                 log,
                 bar,
+                author_name,
             ) for url, name, format_ in tasks
         ]
         tasks = await gather(*tasks)
@@ -180,6 +182,7 @@ class Download:
             format_: str,
             log,
             bar,
+            author_name: str = None
     ):
         async with self.SEMAPHORE:
             headers = self.headers.copy()
@@ -218,6 +221,8 @@ class Download:
                         async for chunk in response.aiter_bytes(self.chunk):
                             await f.write(chunk)
                             # self.__update_progress(bar, len(chunk))
+                path = path.joinpath(author_name) if author_name else path
+                path.mkdir(exist_ok=True, parents=True)
                 real = await self.__suffix_with_file(
                     temp,
                     path,
